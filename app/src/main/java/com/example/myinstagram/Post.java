@@ -5,8 +5,10 @@ import com.parse.ParseFile;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
 
+import java.io.Serializable;
+
 @ParseClassName("Post")
-public class Post extends ParseObject{
+public class Post extends ParseObject implements Serializable {
 
     public ParseFile getMedia() {
         return getParseFile("Image");
