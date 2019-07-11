@@ -1,82 +1,73 @@
 package com.example.myinstagram;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+import android.view.MenuItem;
+import android.widget.Toast;
 
-import com.parse.FindCallback;
-import com.parse.ParseException;
-import com.parse.ParseQuery;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.example.myinstagram.fragments.ComposeFragment;
+import com.example.myinstagram.fragments.ProfileFragment;
+import com.example.myinstagram.fragments.TimelineFragment;
+import com.parse.ParseUser;
 
 public class TimelineActivity extends AppCompatActivity {
-    RecyclerView rvPosts;
-    InstagramAdapter instagramAdapter;
-    ArrayList<Post> posts;
-    private SwipeRefreshLayout swipeContainer;
+    private BottomNavigationView bottomNavigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_timeline);
+        final FragmentManager fragmentManager = getSupportFragmentManager();
 
-        //swipe refresh
-        swipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipeContainer);
-        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        bottomNavigationView = findViewById(R.id.bottom_navigation);
+
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
-            public void onRefresh() {
-                // Your code to refresh the list here.
-                // Make sure you call swipeContainer.setRefreshing(false)
-                // once the network request has completed successfully.
-                instagramAdapter.clear();
-                posts.clear();
-                populateTimeline();
-            }
-        });
-        // Configure the refreshing colors
-        swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
-                android.R.color.holo_green_light,
-                android.R.color.holo_orange_light,
-                android.R.color.holo_red_light);
-
-
-        //find the RecyclerView
-        rvPosts = (RecyclerView) findViewById(R.id.rvPost);
-        //init the arraylist (data source)
-        posts = new ArrayList<>();
-        //construct the adapter from this datasource
-        instagramAdapter = new InstagramAdapter(posts);
-        //RecyclerView setup (layout manager, use adapter)
-        rvPosts.setLayoutManager(new LinearLayoutManager(this));
-        //set the adapter
-        rvPosts.setAdapter(instagramAdapter);
-        populateTimeline();
-    }
-
-    private void populateTimeline(){
-        ParseQuery<Post> query = ParseQuery.getQuery(Post.class);
-        query.setLimit(20); //set a limit of 20 posts
-        query.include("user");
-        query.findInBackground(new FindCallback<Post>() {
-            @Override
-            public void done(List<Post> objects, ParseException e) {
-                if(e == null){
-                    for(int i = 0; i < objects.size(); i++){
-                        posts.add(objects.get(i));
-                        instagramAdapter.notifyItemInserted(posts.size() - 1);
-                    }
-                    swipeContainer.setRefreshing(false);
-                }else{
-                    //something went wrong
-                    Log.e("TimelineActivity", "failure");
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                Fragment fragment;
+                switch (menuItem.getItemId()) {
+                    case R.id.action_home:
+                        fragment = new TimelineFragment();
+                        Toast.makeText(TimelineActivity.this, "Home!", Toast.LENGTH_SHORT);
+                        break;
+                    case R.id.action_compose:
+                        fragment = new ComposeFragment();
+                        Toast.makeText(TimelineActivity.this, "Compose!", Toast.LENGTH_SHORT);
+                        break;
+                    case R.id.action_profile:
+                    default:
+                        fragment = new ProfileFragment();
+                        Toast.makeText(TimelineActivity.this, "Profile!", Toast.LENGTH_SHORT);
+                        break;
+//                    case R.id.action_logout:
+//                    default:
+//                        fragment = MainActivity;
+//                        ParseUser.logOut();
+//                        Intent intent = new Intent(TimelineActivity.this, MainActivity.class);
+//                        startActivity(intent);
+//                        break;
                 }
+                fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).commit();
+                return true;
             }
         });
+        // Set default selection
+        bottomNavigationView.setSelectedItemId(R.id.action_home);
+
+    } //end of onCreate
+
+    public BottomNavigationView getBottomNavigationView() {
+        return bottomNavigationView;
     }
 
+    public void onLogoutAction(MenuItem mi){
+        ParseUser.logOut();
+        Intent intent = new Intent(TimelineActivity.this, MainActivity.class);
+        startActivity(intent);
+    }
 }
