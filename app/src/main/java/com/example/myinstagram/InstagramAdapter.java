@@ -3,7 +3,9 @@ package com.example.myinstagram;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,10 +22,12 @@ public class InstagramAdapter extends RecyclerView.Adapter<InstagramAdapter.View
 
     private List<Post> queries;
     Context context;
+    public int whichFragment;
 
     //pass in the posts in the constructor
-    public InstagramAdapter(List<Post> query){
+    public InstagramAdapter(List<Post> query, int whichFragment){
         queries = query;
+        this.whichFragment = whichFragment;
     }
 
     //for each row, inflate the layout and cache references to the ViewHolder
@@ -42,19 +46,32 @@ public class InstagramAdapter extends RecyclerView.Adapter<InstagramAdapter.View
 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder viewHolder, int i) {
-        //get the data according to position
         Post post = queries.get(i);
-
-        //populate the views according to this data
-        viewHolder.tvUser.setText(post.getUser().getUsername().toString());
-        viewHolder.tvCaption.setText(post.getCaption());
-        viewHolder.tvTimePosted.setText(post.getCreatedAt().toString());
-
         ParseFile photo = post.getMedia();
         String url= photo.getUrl();
+        if(whichFragment == 0){
+            //get the data according to position
 
-        Glide.with(context).load(url).into(viewHolder.ivPicture);
+            //populate the views according to this data
+            viewHolder.tvUser.setText(post.getUser().getUsername().toString());
+            viewHolder.tvCaption.setText(post.getCaption());
+            viewHolder.tvTimePosted.setText(post.getCreatedAt().toString());
 
+            Glide.with(context).load(url).into(viewHolder.ivPicture);
+        }else if (whichFragment == 1){
+            viewHolder.tvUser.setVisibility(View.GONE);
+            viewHolder.tvCaption.setVisibility(View.GONE);
+            viewHolder.tvTimePosted.setVisibility(View.GONE);
+            DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+            int pxWidth = displayMetrics.widthPixels;
+
+            ConstraintLayout.LayoutParams layoutParams = new ConstraintLayout.LayoutParams(pxWidth/3, pxWidth/3);
+            viewHolder.ivPicture.setLayoutParams(layoutParams);
+            if(photo != null){
+                Glide.with(context).load(url).into(viewHolder.ivPicture);
+            }
+
+        }
 
     }
 

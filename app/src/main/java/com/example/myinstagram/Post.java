@@ -34,4 +34,8 @@ public class Post extends ParseObject implements Serializable {
     public void setUser(ParseUser user){
         put("user", user);
     }
+
+//    public Date getCreatedAt(){
+//        return getDate("createdAt");
+//    }
 }

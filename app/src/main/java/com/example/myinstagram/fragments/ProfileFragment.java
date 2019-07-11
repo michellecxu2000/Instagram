@@ -1,7 +1,9 @@
 package com.example.myinstagram.fragments;
 
+import android.support.v7.widget.GridLayoutManager;
 import android.util.Log;
 
+import com.example.myinstagram.InstagramAdapter;
 import com.example.myinstagram.Post;
 import com.parse.FindCallback;
 import com.parse.ParseException;
@@ -11,6 +13,15 @@ import com.parse.ParseUser;
 import java.util.List;
 
 public class ProfileFragment extends TimelineFragment {
+
+    @Override
+    protected void setRecyclerView(){
+        whichFragment = 1;
+        instagramAdapter = new InstagramAdapter(posts, whichFragment);
+        rvPosts.setAdapter(instagramAdapter);
+        rvPosts.setLayoutManager(new GridLayoutManager(getContext(), 3));
+    }
+
     @Override
     protected void populateTimeline() {
         ParseQuery<Post> query = ParseQuery.getQuery(Post.class);

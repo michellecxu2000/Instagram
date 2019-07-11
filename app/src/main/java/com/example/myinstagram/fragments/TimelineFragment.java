@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.myinstagram.EndlessRecyclerViewScrollListener;
 import com.example.myinstagram.InstagramAdapter;
 import com.example.myinstagram.Post;
 import com.example.myinstagram.R;
@@ -28,6 +29,9 @@ public class TimelineFragment extends Fragment {
     InstagramAdapter instagramAdapter;
     ArrayList<Post> posts;
     protected SwipeRefreshLayout swipeContainer;
+    protected EndlessRecyclerViewScrollListener scrollListener;
+    public int whichFragment;
+    long maxId = 0;
 
     // The onCreateView method is called when Fragment should create its View object hierarchy,
     // either dynamically or via XML layout inflation.
@@ -41,6 +45,7 @@ public class TimelineFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
         //swipe refresh
         swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipeContainer);
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -66,17 +71,45 @@ public class TimelineFragment extends Fragment {
         //init the arraylist (data source)
         posts = new ArrayList<>();
         //construct the adapter from this datasource
-        instagramAdapter = new InstagramAdapter(posts);
+
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         //RecyclerView setup (layout manager, use adapter)
-        rvPosts.setLayoutManager(new LinearLayoutManager(getContext()));
+
         //set the adapter
-        rvPosts.setAdapter(instagramAdapter);
+
+        setRecyclerView();
+
+        scrollListener = new EndlessRecyclerViewScrollListener(linearLayoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                // Triggered only when new data needs to be appended to the list
+                // Add whatever code is needed to append new items to the bottom of the list
+                loadNextDataFromApi(page);
+            }
+        };
+        // Adds the scroll listener to RecyclerView
+        rvPosts.addOnScrollListener(scrollListener);
         populateTimeline();
     }
+
+    protected void setRecyclerView(){
+        whichFragment = 0;
+        instagramAdapter = new InstagramAdapter(posts, whichFragment);
+        rvPosts.setAdapter(instagramAdapter);
+        rvPosts.setLayoutManager(new LinearLayoutManager(getContext()));
+    }
+
+    public void loadNextDataFromApi(int offset) {
+        //maxId=tweets.get(tweets.size()-1).uid; //will get the id of the last tweet
+
+        populateTimeline();
+    }
+
 
     protected void populateTimeline(){
         ParseQuery<Post> query = ParseQuery.getQuery(Post.class);
         query.setLimit(20); //set a limit of 20 posts
+        query.addDescendingOrder("createdAt");
         query.include("user");
         query.findInBackground(new FindCallback<Post>() {
             @Override

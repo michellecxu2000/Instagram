@@ -34,6 +34,7 @@ import static android.app.Activity.RESULT_OK;
 public class ComposeFragment extends Fragment {
 
     private Button postBtn;
+    private Button takePicture;
     private EditText caption;
     private ImageView ivPostImage;
     public final String TAG = "ComposeFragment";
@@ -59,6 +60,14 @@ public class ComposeFragment extends Fragment {
         postBtn = view.findViewById(R.id.postBtn);
         caption = view.findViewById(R.id.etCaption);
         ivPostImage = view.findViewById(R.id.ivPreview);
+        takePicture= view.findViewById(R.id.takePicBtn);
+
+        takePicture.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onLaunchCamera(v);
+            }
+        });
 
         //post image button (post means the image and caption go on the Parse server)
         postBtn.setOnClickListener(new View.OnClickListener() {
@@ -72,6 +81,8 @@ public class ComposeFragment extends Fragment {
                     return;
                 }
                 savePost(description, user, photoFile);
+                //Intent intent = new Intent(getContext(), TimelineFragment.class);
+                //startActivity(intent);
             }
         });
 

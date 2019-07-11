@@ -44,13 +44,6 @@ public class TimelineActivity extends AppCompatActivity {
                         fragment = new ProfileFragment();
                         Toast.makeText(TimelineActivity.this, "Profile!", Toast.LENGTH_SHORT);
                         break;
-//                    case R.id.action_logout:
-//                    default:
-//                        fragment = MainActivity;
-//                        ParseUser.logOut();
-//                        Intent intent = new Intent(TimelineActivity.this, MainActivity.class);
-//                        startActivity(intent);
-//                        break;
                 }
                 fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).commit();
                 return true;
@@ -58,6 +51,7 @@ public class TimelineActivity extends AppCompatActivity {
         });
         // Set default selection
         bottomNavigationView.setSelectedItemId(R.id.action_home);
+
 
     } //end of onCreate
 
