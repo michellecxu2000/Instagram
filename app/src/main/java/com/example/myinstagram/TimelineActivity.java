@@ -8,7 +8,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.example.myinstagram.fragments.ComposeFragment;
 import com.example.myinstagram.fragments.ProfileFragment;
@@ -33,16 +32,13 @@ public class TimelineActivity extends AppCompatActivity {
                 switch (menuItem.getItemId()) {
                     case R.id.action_home:
                         fragment = new TimelineFragment();
-                        Toast.makeText(TimelineActivity.this, "Home!", Toast.LENGTH_SHORT);
                         break;
                     case R.id.action_compose:
                         fragment = new ComposeFragment();
-                        Toast.makeText(TimelineActivity.this, "Compose!", Toast.LENGTH_SHORT);
                         break;
                     case R.id.action_profile:
                     default:
                         fragment = new ProfileFragment();
-                        Toast.makeText(TimelineActivity.this, "Profile!", Toast.LENGTH_SHORT);
                         break;
                 }
                 fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).commit();

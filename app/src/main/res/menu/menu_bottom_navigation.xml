@@ -4,21 +4,22 @@
 
     <item
         android:id="@+id/action_home"
-        android:icon="@drawable/ic_home"
+        android:icon="@drawable/home_tab"
         android:title="Home"
         app:showAsAction="always" />
     <item
         android:id="@+id/action_compose"
-        android:icon="@drawable/ic_newpost"
+        android:icon="@drawable/add_tab"
         android:title="Compose"
         app:showAsAction="always" />
     <item
         android:id="@+id/action_profile"
-        android:icon="@drawable/ic_user"
+        android:icon="@drawable/user_tab"
         android:title="Profile"
         app:showAsAction="always" />
     <item
         android:id="@+id/action_logout"
+        android:icon="@android:drawable/ic_lock_power_off"
         android:onClick="onLogoutAction"
         android:title="Logout"
         app:showAsAction="always" />

@@ -56,7 +56,7 @@ public class SignUpActivity extends AppCompatActivity {
                     startActivity(intent);
                     finish();
                 }else{
-                    Log.e("SignUpActivity", "Sign up failure");
+                    Log.e("SignUpActivity", "Sign up failure", e);
                     e.printStackTrace();
                 }
             }
